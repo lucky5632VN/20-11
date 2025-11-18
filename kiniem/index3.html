@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kỷ Niệm Của Chúng Ta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+        body {
+            font-family: 'Lora', serif;
+            background-color: #fffafc; /* Màu nền hồng rất nhạt */
+        }
+        .gallery-item img {
+            transition: all 0.3s ease-in-out;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .gallery-item img:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+        }
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            display: none; /* Ẩn ban đầu */
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        #lightbox.active {
+            display: flex;
+        }
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 5px solid white;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Nhạc nền cho trang 3 -->
+    <audio id="audioPage3" loop>
+        <!-- Đường dẫn này đi lùi 1 cấp ('../') để ra khỏi thư mục 'kiniem' -->
+        <source src="../music/song3_piano.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Lightbox (Modal xem ảnh) -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="https://placehold.co/600x400/FFF0F5/DB2777?text=Anh+Ky+Niem" alt="Ảnh phóng to">
+    </div>
+
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+        
+        <!-- Tiêu đề -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-pink-600 mb-4" style="font-family: 'Lora', serif;">Những Kỷ Niệm Sẽ Mãi Còn Đây</h1>
+            <p class="text-xl text-gray-600">Cảm ơn cô vì đã là một phần thanh xuân tươi đẹp của chúng em.</p>
+        </header>
+
+        <!-- Bộ sưu tập ảnh -->
+        <div id="gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <!-- 
+                Đây là các ảnh mẫu (placeholder).
+                Bạn hãy thay thế src="..." bằng đường dẫn ảnh của bạn.
+                Ví dụ: src="../images/ky-niem-1.jpg" (nhớ dùng ../)
+            -->
+            <div class="gallery-item">
+                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+1" alt="Kỷ niệm 1" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/600x600/FFF0F5/DB2777?text=Ky+Niem+2" alt="Kỷ niệm 2" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+3" alt="Kỷ niệm 3" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/400x600/FFF0F5/DB2777?text=Ky+Niem+4" alt="Kỷ niệm 4" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/600x600/FFF0F5/DB2777?text=Ky+Niem+5" alt="Kỷ niệm 5" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+6" alt="Kỷ niệm 6" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/400x600/FFF0F5/DB2777?text=Ky+Niem+7" alt="Kỷ niệm 7" onclick="openLightbox(this.src)">
+            </div>
+            <div class="gallery-item">
+                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+8" alt="Kỷ niệm 8" onclick="openLightbox(this.src)">
+            </div>
+        </div>
+
+        <!-- Nút quay về -->
+        <footer class="text-center mt-12">
+            <!-- Đường dẫn này đi lùi 1 cấp ('../') để ra khỏi thư mục 'kiniem' -->
+            <a href="../index.html" class="inline-block bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-pink-700 transition-transform hover:scale-105">
+                Quay về trang đầu
+            </a>
+        </footer>
+
+    </div>
+
+    <script>
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const audio = document.getElementById("audioPage3");
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+        }
+
+        // Tự động phát nhạc khi tải trang (hoặc khi click lần đầu)
+        document.addEventListener('DOMContentLoaded', function() {
+            var playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Trình duyệt chặn autoplay. Đang chờ tương tác...");
+                    var playOnInteraction = function() {
+                        audio.play();
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                    };
+                    document.addEventListener('click', playOnInteraction);
+                    document.addEventListener('touchstart', playOnInteraction);
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
