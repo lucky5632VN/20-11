@@ -3,173 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kỷ Niệm Của Chúng Ta</title>
+    <title>Góc Kỷ Niệm | 20-11</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+        
         body {
             font-family: 'Lora', serif;
-            background-color: #fffafc;
+            background: linear-gradient(135deg, #fff5f7 0%, #fff0f5 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.5rem;
-            cursor: pointer;
+
+        /* Hiệu ứng tiêu đề */
+        .title-font {
+            font-family: 'Dancing Script', cursive;
         }
-        .gallery-item img {
+
+        /* Masonry Layout (Xếp gạch kiểu Pinterest) */
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 640px) { .masonry-grid { column-count: 2; } }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 3; } }
+
+        /* Style cho từng tấm ảnh (Polaroid Style) */
+        .photo-card {
+            break-inside: avoid; /* Không bị cắt đôi khi xuống dòng */
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 12px 12px 30px 12px; /* Phần dưới dày hơn giống ảnh Polaroid */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+            transform: rotate(0deg);
+            cursor: zoom-in;
+            opacity: 0; /* Ẩn ban đầu để chạy hiệu ứng hiện ra */
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Tạo hiệu ứng nghiêng ngẫu nhiên nhẹ khi hover */
+        .photo-card:hover {
+            transform: scale(1.03) rotate(-1deg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 10;
+        }
+        .photo-card:nth-child(even):hover {
+            transform: scale(1.03) rotate(1deg);
+        }
+
+        .photo-card img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.5s ease-in-out;
-            border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: auto;
+            display: block;
+            border-radius: 2px;
         }
-        .gallery-item:hover img {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+        /* Animation xuất hiện */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Lightbox */
         #lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); z-index: 100;
-            display: none; justify-content: center; align-items: center;
-            padding: 1rem; opacity: 0; transition: opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+            transition: opacity 0.3s ease;
         }
-        #lightbox.active { display: flex; opacity: 1; }
+        #lightbox.active { display: flex; opacity: 1; pointer-events: auto; }
+        #lightbox:not(.active) { opacity: 0; pointer-events: none; }
+        
         #lightbox img {
-            max-width: 95%; max-height: 95%;
-            border: 5px solid white; border-radius: 4px;
-            transform: scale(0.9); transition: transform 0.3s ease;
+            max-width: 90vw;
+            max-height: 85vh;
+            border: 8px solid white;
+            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         #lightbox.active img { transform: scale(1); }
-        .close-btn {
-            position: absolute; top: 20px; right: 30px;
-            color: white; font-size: 40px; cursor: pointer; z-index: 101;
+
+        /* Nút điều khiển nhạc */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(219, 39, 119, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .music-control:hover { transform: scale(1.1); }
+        .music-control.playing i { animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Hoa rơi (trang trí) */
+        .flower {
+            position: fixed;
+            top: -10%;
+            z-index: 0;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body class="text-gray-800">
 
     <!-- Nhạc nền -->
-    <audio id="audioPage3" loop>
-        <source src="../music/song3_piano.mp3" type="audio/mpeg">
+    <audio id="bgAudio" loop>
+        <source src="../music/song3.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Lightbox -->
-    <div id="lightbox" onclick="closeLightbox()">
-        <span class="close-btn">&times;</span>
-        <img id="lightbox-img" src="" alt="Ảnh phóng to">
+    <!-- Nút nhạc -->
+    <div class="music-control" onclick="toggleMusic()" title="Bật/Tắt nhạc">
+        <i class="fa-solid fa-compact-disc text-2xl text-pink-600"></i>
     </div>
 
-    <div class="container mx-auto px-4 py-12 max-w-6xl">
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 bg-black/90 z-[100] flex justify-center items-center p-4" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-white text-5xl hover:text-pink-400 transition-colors">&times;</button>
+        <img id="lightbox-img" src="" alt="Ảnh phóng to" onclick="event.stopPropagation()">
+    </div>
+
+    <div class="container mx-auto px-6 py-16 max-w-7xl relative z-10">
         
         <!-- Header -->
-        <header class="text-center mb-16 animate-fade-in-down">
-            <h1 class="text-4xl md:text-6xl font-bold text-pink-600 mb-4 drop-shadow-sm" style="font-family: 'Lora', serif;">
-                Những Kỷ Niệm Sẽ Mãi Còn Đây
+        <header class="text-center mb-20">
+            <h1 class="title-font text-5xl md:text-7xl text-pink-600 mb-6 drop-shadow-sm animate-[fadeInUp_1s_ease-out]">
+                Lưu Bút Ngày Xanh
             </h1>
-            <div class="w-24 h-1 bg-pink-400 mx-auto mb-6 rounded"></div>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto italic">
-                "Thời gian có thể trôi đi, nhưng những khoảnh khắc đẹp đẽ bên cô và mái trường này sẽ mãi in sâu trong trái tim chúng em."
+            <div class="w-32 h-1.5 bg-gradient-to-r from-pink-300 to-purple-300 mx-auto mb-8 rounded-full"></div>
+            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto italic leading-relaxed">
+                "Mỗi bức ảnh là một mảnh ghép ký ức, để nhắc nhở chúng ta về những tháng ngày rực rỡ nhất dưới mái trường này."
             </p>
         </header>
 
-        <!-- Gallery -->
-        <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Gallery Masonry -->
+        <div id="gallery" class="masonry-grid">
+            <!-- Ảnh sẽ được JS thêm vào hoặc bạn có thể viết cứng tại đây -->
             
-            <!-- 
-               QUAN TRỌNG: 
-               1. Hãy đổi tên ảnh trong thư mục 'image' thành anh1.jpg, anh2.jpg,... 
-               2. Hoặc sửa 'src' bên dưới thành tên ảnh thực tế của bạn.
-            -->
-
-            <!-- Ảnh 1 -->
-            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
-                <img src="../image/anh1.jpg" onerror="this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 1">
+            <!-- MẪU 1 CARD ẢNH -->
+            <div class="photo-card" style="animation-delay: 0.1s" onclick="openLightbox(this)">
+                <img src="../image/anh1.jpg" onerror="this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=80'" alt="Kỷ niệm">
+                <div class="mt-3 text-center font-handwriting text-gray-500 text-sm italic">Kỷ niệm 1</div>
             </div>
 
-            <!-- Ảnh 2 -->
-            <div class="gallery-item aspect-[3/4] row-span-2" onclick="openLightbox(this)">
-                <img src="../image/anh2.jpg" onerror="this.src='https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 2">
+            <div class="photo-card" style="animation-delay: 0.2s" onclick="openLightbox(this)">
+                <img src="../image/anh2.jpg" onerror="this.src='https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=600&q=80'" alt="Kỷ niệm">
+                <div class="mt-3 text-center font-handwriting text-gray-500 text-sm italic">Kỷ niệm 2</div>
             </div>
 
-            <!-- Ảnh 3 -->
-            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
-                <img src="../image/anh3.jpg" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 3">
+            <div class="photo-card" style="animation-delay: 0.3s" onclick="openLightbox(this)">
+                <img src="../image/anh3.jpg" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80'" alt="Kỷ niệm">
+                <div class="mt-3 text-center font-handwriting text-gray-500 text-sm italic">Kỷ niệm 3</div>
             </div>
 
-            <!-- Ảnh 4 -->
-            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
-                <img src="../image/anh4.jpg" onerror="this.src='https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 4">
+            <div class="photo-card" style="animation-delay: 0.4s" onclick="openLightbox(this)">
+                <img src="../image/anh4.jpg" onerror="this.src='https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&q=80'" alt="Kỷ niệm">
+                <div class="mt-3 text-center font-handwriting text-gray-500 text-sm italic">Kỷ niệm 4</div>
             </div>
 
-            <!-- Ảnh 5 -->
-            <div class="gallery-item aspect-[4/3]" onclick="openLightbox(this)">
-                <img src="../image/anh5.jpg" onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 5">
+            <div class="photo-card" style="animation-delay: 0.5s" onclick="openLightbox(this)">
+                <img src="../image/anh5.jpg" onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80'" alt="Kỷ niệm">
+                <div class="mt-3 text-center font-handwriting text-gray-500 text-sm italic">Khoảnh khắc đáng nhớ</div>
             </div>
 
-            <!-- Ảnh 6 -->
-            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
-                <img src="../image/anh6.jpg" onerror="this.src='https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 6">
+            <div class="photo-card" style="animation-delay: 0.6s" onclick="openLightbox(this)">
+                <img src="../image/anh6.jpg" onerror="this.src='https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&q=80'" alt="Kỷ niệm">
             </div>
 
-            <!-- Ảnh 7 -->
-            <div class="gallery-item aspect-[3/4] row-span-2" onclick="openLightbox(this)">
-                <img src="../image/anh7.jpg" onerror="this.src='https://images.unsplash.com/photo-1427504746696-ea5abc71a380?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 7">
+            <div class="photo-card" style="animation-delay: 0.7s" onclick="openLightbox(this)">
+                <img src="../image/anh7.jpg" onerror="this.src='https://images.unsplash.com/photo-1427504746696-ea5abc71a380?w=600&q=80'" alt="Kỷ niệm">
             </div>
 
-            <!-- Ảnh 8 -->
-            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
-                <img src="../image/anh8.jpg" onerror="this.src='https://images.unsplash.com/photo-1511629091441-ee46146481b6?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 8">
+            <div class="photo-card" style="animation-delay: 0.8s" onclick="openLightbox(this)">
+                <img src="../image/anh8.jpg" onerror="this.src='https://images.unsplash.com/photo-1511629091441-ee46146481b6?w=600&q=80'" alt="Kỷ niệm">
             </div>
 
-             <!-- Ảnh 9 (Thêm nếu muốn) -->
-             <div class="gallery-item aspect-square" onclick="openLightbox(this)">
-                <img src="../image/anh9.jpg" onerror="this.src='https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 9">
+             <div class="photo-card" style="animation-delay: 0.9s" onclick="openLightbox(this)">
+                <img src="../image/anh9.jpg" onerror="this.src='https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&q=80'" alt="Kỷ niệm">
             </div>
-
         </div>
 
         <!-- Footer -->
-        <footer class="text-center mt-16 pb-8">
-            <a href="../index.html" class="inline-flex items-center gap-2 bg-white text-pink-600 border-2 border-pink-600 font-bold py-3 px-8 rounded-full shadow-md hover:bg-pink-600 hover:text-white transition-all duration-300 hover:scale-105 group">
-                <span>❮</span> Quay về trang đầu
+        <footer class="text-center mt-24 pb-8">
+            <a href="../index.html" class="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-pink-600 font-bold rounded-full shadow-lg overflow-hidden transition-all hover:shadow-pink-200 hover:scale-105 active:scale-95 border border-pink-100">
+                <div class="absolute inset-0 bg-gradient-to-r from-pink-100 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span class="relative z-10 text-xl transition-transform group-hover:-translate-x-1">❮</span>
+                <span class="relative z-10">Quay về trang đầu</span>
             </a>
         </footer>
 
     </div>
 
     <script>
+        // --- Xử lý Lightbox ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
-        const audio = document.getElementById("audioPage3");
-
+        
         function openLightbox(element) {
             const img = element.querySelector('img');
-            lightboxImg.src = img.src; // Lấy src thực tế (kể cả khi fallback)
+            lightboxImg.src = img.src;
             lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Khóa cuộn trang
         }
 
         function closeLightbox() {
             lightbox.classList.remove('active');
+            document.body.style.overflow = ''; // Mở khóa cuộn
         }
 
-        // Auto-play music logic
+        // --- Xử lý Nhạc ---
+        const audio = document.getElementById("bgAudio");
+        const musicBtn = document.querySelector(".music-control");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.classList.remove("playing");
+                musicBtn.innerHTML = '<i class="fa-solid fa-compact-disc text-2xl text-gray-400"></i>';
+            } else {
+                audio.play();
+                musicBtn.classList.add("playing");
+                musicBtn.innerHTML = '<i class="fa-solid fa-music text-2xl text-pink-600"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Tự động phát nhạc khi tải trang (với fallback)
         document.addEventListener('DOMContentLoaded', function() {
+            audio.volume = 0.6;
             var playPromise = audio.play();
             if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Auto-play blocked");
-                    var playOnInteraction = function() {
-                        audio.play();
-                        document.removeEventListener('click', playOnInteraction);
-                        document.removeEventListener('touchstart', playOnInteraction);
-                    };
-                    document.addEventListener('click', playOnInteraction);
-                    document.addEventListener('touchstart', playOnInteraction);
+                playPromise.then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add("playing");
+                    musicBtn.innerHTML = '<i class="fa-solid fa-music text-2xl text-pink-600"></i>';
+                }).catch(error => {
+                    console.log("Chờ tương tác để phát nhạc...");
+                    // Thêm event click vào body để phát nhạc lần đầu
+                    document.body.addEventListener('click', function() {
+                        if(!isPlaying) toggleMusic();
+                    }, { once: true });
                 });
             }
         });
+
+        // --- Hiệu ứng hoa rơi (Decoration) ---
+        function createFlower() {
+            const flower = document.createElement('div');
+            flower.innerHTML = '🌸';
+            flower.classList.add('flower');
+            flower.style.left = Math.random() * 100 + 'vw';
+            flower.style.animationDuration = Math.random() * 3 + 5 + 's';
+            flower.style.fontSize = Math.random() * 10 + 15 + 'px';
+            document.body.appendChild(flower);
+
+            setTimeout(() => {
+                flower.remove();
+            }, 8000);
+        }
+        setInterval(createFlower, 800); // Tạo hoa mỗi 0.8s
     </script>
 
 </body>
