@@ -9,102 +9,131 @@
         @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
         body {
             font-family: 'Lora', serif;
-            background-color: #fffafc; /* Màu nền hồng rất nhạt */
+            background-color: #fffafc;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            cursor: pointer;
         }
         .gallery-item img {
-            transition: all 0.3s ease-in-out;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease-in-out;
             border: 4px solid white;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        .gallery-item img:hover {
-            transform: scale(1.05) rotate(1deg);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
+        .gallery-item:hover img {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
         #lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            z-index: 100;
-            display: none; /* Ẩn ban đầu */
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            box-sizing: border-box;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); z-index: 100;
+            display: none; justify-content: center; align-items: center;
+            padding: 1rem; opacity: 0; transition: opacity 0.3s ease;
         }
-        #lightbox.active {
-            display: flex;
-        }
+        #lightbox.active { display: flex; opacity: 1; }
         #lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            border: 5px solid white;
-            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+            max-width: 95%; max-height: 95%;
+            border: 5px solid white; border-radius: 4px;
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        #lightbox.active img { transform: scale(1); }
+        .close-btn {
+            position: absolute; top: 20px; right: 30px;
+            color: white; font-size: 40px; cursor: pointer; z-index: 101;
         }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Nhạc nền cho trang 3 -->
+    <!-- Nhạc nền -->
     <audio id="audioPage3" loop>
-        <!-- Đường dẫn này đi lùi 1 cấp ('../') để ra khỏi thư mục 'kiniem' -->
         <source src="../music/song3_piano.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Lightbox (Modal xem ảnh) -->
+    <!-- Lightbox -->
     <div id="lightbox" onclick="closeLightbox()">
-        <img id="lightbox-img" src="https://placehold.co/600x400/FFF0F5/DB2777?text=Anh+Ky+Niem" alt="Ảnh phóng to">
+        <span class="close-btn">&times;</span>
+        <img id="lightbox-img" src="" alt="Ảnh phóng to">
     </div>
 
     <div class="container mx-auto px-4 py-12 max-w-6xl">
         
-        <!-- Tiêu đề -->
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-6xl font-bold text-pink-600 mb-4" style="font-family: 'Lora', serif;">Những Kỷ Niệm Sẽ Mãi Còn Đây</h1>
-            <p class="text-xl text-gray-600">Cảm ơn cô vì đã là một phần thanh xuân tươi đẹp của chúng em.</p>
+        <!-- Header -->
+        <header class="text-center mb-16 animate-fade-in-down">
+            <h1 class="text-4xl md:text-6xl font-bold text-pink-600 mb-4 drop-shadow-sm" style="font-family: 'Lora', serif;">
+                Những Kỷ Niệm Sẽ Mãi Còn Đây
+            </h1>
+            <div class="w-24 h-1 bg-pink-400 mx-auto mb-6 rounded"></div>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto italic">
+                "Thời gian có thể trôi đi, nhưng những khoảnh khắc đẹp đẽ bên cô và mái trường này sẽ mãi in sâu trong trái tim chúng em."
+            </p>
         </header>
 
-        <!-- Bộ sưu tập ảnh -->
-        <div id="gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <!-- Gallery -->
+        <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            
             <!-- 
-                Đây là các ảnh mẫu (placeholder).
-                Bạn hãy thay thế src="..." bằng đường dẫn ảnh của bạn.
-                Ví dụ: src="../images/ky-niem-1.jpg" (nhớ dùng ../)
+               QUAN TRỌNG: 
+               1. Hãy đổi tên ảnh trong thư mục 'image' thành anh1.jpg, anh2.jpg,... 
+               2. Hoặc sửa 'src' bên dưới thành tên ảnh thực tế của bạn.
             -->
-            <div class="gallery-item">
-                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+1" alt="Kỷ niệm 1" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 1 -->
+            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
+                <img src="../image/anh1.jpg" onerror="this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 1">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/600x600/FFF0F5/DB2777?text=Ky+Niem+2" alt="Kỷ niệm 2" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 2 -->
+            <div class="gallery-item aspect-[3/4] row-span-2" onclick="openLightbox(this)">
+                <img src="../image/anh2.jpg" onerror="this.src='https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 2">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+3" alt="Kỷ niệm 3" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 3 -->
+            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
+                <img src="../image/anh3.jpg" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 3">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/400x600/FFF0F5/DB2777?text=Ky+Niem+4" alt="Kỷ niệm 4" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 4 -->
+            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
+                <img src="../image/anh4.jpg" onerror="this.src='https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 4">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/600x600/FFF0F5/DB2777?text=Ky+Niem+5" alt="Kỷ niệm 5" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 5 -->
+            <div class="gallery-item aspect-[4/3]" onclick="openLightbox(this)">
+                <img src="../image/anh5.jpg" onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 5">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+6" alt="Kỷ niệm 6" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 6 -->
+            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
+                <img src="../image/anh6.jpg" onerror="this.src='https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 6">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/400x600/FFF0F5/DB2777?text=Ky+Niem+7" alt="Kỷ niệm 7" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 7 -->
+            <div class="gallery-item aspect-[3/4] row-span-2" onclick="openLightbox(this)">
+                <img src="../image/anh7.jpg" onerror="this.src='https://images.unsplash.com/photo-1427504746696-ea5abc71a380?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 7">
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.co/600x400/FFF0F5/DB2777?text=Ky+Niem+8" alt="Kỷ niệm 8" onclick="openLightbox(this.src)">
+
+            <!-- Ảnh 8 -->
+            <div class="gallery-item aspect-square" onclick="openLightbox(this)">
+                <img src="../image/anh8.jpg" onerror="this.src='https://images.unsplash.com/photo-1511629091441-ee46146481b6?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 8">
             </div>
+
+             <!-- Ảnh 9 (Thêm nếu muốn) -->
+             <div class="gallery-item aspect-square" onclick="openLightbox(this)">
+                <img src="../image/anh9.jpg" onerror="this.src='https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1000&auto=format&fit=crop'" alt="Kỷ niệm 9">
+            </div>
+
         </div>
 
-        <!-- Nút quay về -->
-        <footer class="text-center mt-12">
-            <!-- Đường dẫn này đi lùi 1 cấp ('../') để ra khỏi thư mục 'kiniem' -->
-            <a href="../index.html" class="inline-block bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-pink-700 transition-transform hover:scale-105">
-                Quay về trang đầu
+        <!-- Footer -->
+        <footer class="text-center mt-16 pb-8">
+            <a href="../index.html" class="inline-flex items-center gap-2 bg-white text-pink-600 border-2 border-pink-600 font-bold py-3 px-8 rounded-full shadow-md hover:bg-pink-600 hover:text-white transition-all duration-300 hover:scale-105 group">
+                <span>❮</span> Quay về trang đầu
             </a>
         </footer>
 
@@ -115,8 +144,9 @@
         const lightboxImg = document.getElementById('lightbox-img');
         const audio = document.getElementById("audioPage3");
 
-        function openLightbox(src) {
-            lightboxImg.src = src;
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            lightboxImg.src = img.src; // Lấy src thực tế (kể cả khi fallback)
             lightbox.classList.add('active');
         }
 
@@ -124,12 +154,12 @@
             lightbox.classList.remove('active');
         }
 
-        // Tự động phát nhạc khi tải trang (hoặc khi click lần đầu)
+        // Auto-play music logic
         document.addEventListener('DOMContentLoaded', function() {
             var playPromise = audio.play();
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.log("Trình duyệt chặn autoplay. Đang chờ tương tác...");
+                    console.log("Auto-play blocked");
                     var playOnInteraction = function() {
                         audio.play();
                         document.removeEventListener('click', playOnInteraction);
